@@ -1,0 +1,67 @@
+CREATE TABLE IF NOT EXISTS memberships (
+    id serial PRIMARY KEY,
+    short_name VARCHAR(250) NOT NULL,
+    description VARCHAR,
+    price INT NOT NULL,
+    duration TIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS trainers (
+    id serial PRIMARY KEY,
+    first_name VARCHAR(250) NOT NULL,
+    last_name VARCHAR(250) NOT NULL,
+    email VARCHAR(250) UNIQUE NOT NULL,
+    phone_number VARCHAR(250) UNIQUE NOT NULL,
+    description VARCHAR(250),
+    price INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS managers (
+    id serial PRIMARY KEY,
+    first_name VARCHAR(250) NOT NULL,
+    last_name VARCHAR(250) NOT NULL,
+    email VARCHAR(250) UNIQUE NOT NULL,
+    phone_number VARCHAR(250) UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS members (
+    id serial PRIMARY KEY,
+    first_name VARCHAR(250) NOT NULL,
+    last_name VARCHAR(250) NOT NULL,
+    phone_number VARCHAR(250) UNIQUE NOT NULL,
+    membership_id INT REFERENCES memberships(id) ON DELETE CASCADE,
+    trainer_id INT REFERENCES trainers(id) ON DELETE CASCADE,
+    joined_at TIMESTAMP NOT NULL,
+    membership_expiration TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS members_visits (
+    id serial PRIMARY KEY,
+    arrived_at TIMESTAMP NOT NULL,
+    left_at TIMESTAMP,
+    member_id INT REFERENCES members(id) ON DELETE CASCADE NOT NULL,
+    trainer_id INT REFERENCES trainers(id) ON DELETE CASCADE,
+    manager_id INT REFERENCES managers(id) ON DELETE CASCADE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS trainers_visits (
+    id serial PRIMARY KEY,
+    arrived_at TIMESTAMP NOT NULL,
+    left_at TIMESTAMP,
+    trainer_id INT REFERENCES trainers(id) ON DELETE CASCADE NOT NULL,
+    manager_id INT REFERENCES managers(id) ON DELETE CASCADE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS programs (
+    id serial PRIMARY KEY,
+    short_name VARCHAR(250) NOT NULL,
+    description VARCHAR(250) NOT NULL,
+    price INT NOT NULL,
+    trainer_id INT REFERENCES trainers(id) ON DELETE CASCADE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS programs_members (
+    id serial PRIMARY KEY,
+    program_id INT REFERENCES programs(id) ON DELETE CASCADE NOT NULL,
+    member_id INT REFERENCES members(id) ON DELETE CASCADE NOT NULL
+);
