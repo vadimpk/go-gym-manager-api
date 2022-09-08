@@ -1,0 +1,23 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "REST API for Gym Management",
+        "title": "Gym Manager API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "paths": {
+        "/manager/": {
+            "post": {
+                "description": "manager sign in",
+                "tags": [
+                    "manager-auth"
+                ],
+                "summary": "Manager SignIn",
+                "responses": {}
+            }
+        }
+    }
+}

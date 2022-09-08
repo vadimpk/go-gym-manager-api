@@ -1,0 +1,16 @@
+basePath: /
+host: localhost:8000
+info:
+  contact: {}
+  description: REST API for Gym Management
+  title: Gym Manager API
+  version: "1.0"
+paths:
+  /manager/:
+    post:
+      description: manager sign in
+      responses: {}
+      summary: Manager SignIn
+      tags:
+      - manager-auth
+swagger: "2.0"
