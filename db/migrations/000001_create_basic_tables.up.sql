@@ -38,7 +38,6 @@ CREATE TABLE IF NOT EXISTS members (
     last_name VARCHAR(250) NOT NULL,
     phone_number VARCHAR(250) UNIQUE NOT NULL,
     membership_id INT REFERENCES memberships(id) ON DELETE CASCADE,
-    trainer_id INT REFERENCES trainers(id) ON DELETE CASCADE,
     joined_at TIMESTAMP NOT NULL,
     membership_expiration TIMESTAMP
 );

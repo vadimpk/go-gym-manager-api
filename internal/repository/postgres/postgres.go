@@ -9,6 +9,7 @@ import (
 const (
 	managersTable = "managers"
 	sessionsTable = "sessions"
+	membersTable  = "members"
 )
 
 func NewPostgresDB(cfg *config.Config) (*sqlx.DB, error) {

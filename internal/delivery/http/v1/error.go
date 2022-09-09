@@ -13,7 +13,7 @@ const (
 	errInvalidAuthHeader = "invalid auth header"
 	errEmptyToken        = "token is empty"
 
-	errNotAuthMessage        = "Not authenticated"
+	errNotAuthMessage        = "Not authorized"
 	errBadRequestMessage     = "Input data is incorrect"
 	errNotInDBMessage        = "No results found in database"
 	errInternalServerMessage = "Server is not responding at the moment"

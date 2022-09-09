@@ -18,6 +18,15 @@ func (h *Handler) initManagerRoutes(api *gin.RouterGroup) {
 			{
 				manager.POST("/create", h.managerCreateNew)
 			}
+			member := auth.Group("/members")
+			{
+				member.POST("/create", h.memberCreateNew)
+				member.GET("/get/:id", h.memberGetByID)
+				member.PUT("/update/:id", h.memberUpdateByID)
+				member.DELETE("/delete/:id", h.memberDeleteByID)
+				member.PUT("/set_membership/:id/:membership_id", h.memberSetMembership)
+				member.PUT("/delete_membership/:id/:membership_id", h.memberDeleteMembership)
+			}
 		}
 	}
 }
