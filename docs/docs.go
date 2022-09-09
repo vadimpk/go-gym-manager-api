@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/manager/auth/refresh": {
+        "/managers/auth/refresh": {
             "post": {
                 "description": "manager refresh",
                 "consumes": [
@@ -46,11 +46,50 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/service.Tokens"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
                     }
                 }
             }
         },
-        "/manager/sign-in": {
+        "/managers/manager/create": {
+            "post": {
+                "security": [
+                    {
+                        "ManagerAuth": []
+                    }
+                ],
+                "description": "manager creation",
+                "tags": [
+                    "manager"
+                ],
+                "summary": "Create New Manager",
+                "responses": {}
+            }
+        },
+        "/managers/sign-in": {
             "post": {
                 "description": "manager sign in",
                 "consumes": [
@@ -62,7 +101,7 @@ const docTemplate = `{
                 "tags": [
                     "manager-auth"
                 ],
-                "summary": "Manager SignIn",
+                "summary": "Manager Sign In",
                 "parameters": [
                     {
                         "description": "sign up info",
@@ -79,6 +118,30 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/service.Tokens"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
                         }
                     }
                 }
@@ -122,6 +185,21 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "v1.response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ManagerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

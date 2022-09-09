@@ -7,15 +7,20 @@ import (
 	_ "github.com/vadimpk/go-gym-manager-api/docs"
 	v1 "github.com/vadimpk/go-gym-manager-api/internal/delivery/http/v1"
 	"github.com/vadimpk/go-gym-manager-api/internal/service"
+	"github.com/vadimpk/go-gym-manager-api/pkg/auth"
 	"net/http"
 )
 
 type Handler struct {
-	services *service.Services
+	services     *service.Services
+	tokenManager auth.TokenManager
 }
 
-func NewHandler(services *service.Services) *Handler {
-	return &Handler{services: services}
+func NewHandler(services *service.Services, manager auth.TokenManager) *Handler {
+	return &Handler{
+		services:     services,
+		tokenManager: manager,
+	}
 }
 
 func (h *Handler) Init() *gin.Engine {
@@ -35,7 +40,7 @@ func (h *Handler) Init() *gin.Engine {
 }
 
 func (h *Handler) initAPI(router *gin.Engine) {
-	handlerV1 := v1.NewHandler(h.services)
+	handlerV1 := v1.NewHandler(h.services, h.tokenManager)
 	api := router.Group("/api")
 	{
 		handlerV1.Init(api)

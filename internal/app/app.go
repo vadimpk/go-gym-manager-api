@@ -32,7 +32,7 @@ func Run(configPath string) {
 
 	services := service.NewServices(cfg, tokenManager, repo)
 
-	handler := http.NewHandler(services)
+	handler := http.NewHandler(services, tokenManager)
 
 	srv := server.NewServer(cfg, handler.Init())
 
