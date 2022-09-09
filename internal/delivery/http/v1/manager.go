@@ -12,9 +12,12 @@ func (h *Handler) initManagerRoutes(api *gin.RouterGroup) {
 		managers.POST("/sign-in", h.managerSignIn)
 		managers.POST("/auth/refresh", h.managerRefresh)
 
-		auth := managers.Group("/manager", h.managerIdentity)
+		auth := managers.Group("/", h.managerIdentity)
 		{
-			auth.POST("/create", h.managerCreateNew)
+			manager := auth.Group("/manager")
+			{
+				manager.POST("/create", h.managerCreateNew)
+			}
 		}
 	}
 }
