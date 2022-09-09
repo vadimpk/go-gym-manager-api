@@ -6,3 +6,4 @@ DROP TABLE IF EXISTS memberships;
 DROP TABLE IF EXISTS trainers_visits;
 DROP TABLE IF EXISTS trainers;
 DROP TABLE IF EXISTS managers;
+DROP TABLE IF EXISTS sessions;

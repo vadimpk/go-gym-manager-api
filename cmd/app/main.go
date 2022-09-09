@@ -9,7 +9,7 @@ const configPath = "configs/main"
 // @description REST API for Gym Management
 
 // @host localhost:8000
-// @BasePath /
+// @BasePath /api/v1
 func main() {
 	app.Run(configPath)
 }

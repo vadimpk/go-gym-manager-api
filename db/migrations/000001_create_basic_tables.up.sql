@@ -16,12 +16,20 @@ CREATE TABLE IF NOT EXISTS trainers (
     price INT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS sessions (
+    id serial PRIMARY KEY,
+    refresh_token VARCHAR(250) NOT NULL,
+    expires_at TIME NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS managers (
     id serial PRIMARY KEY,
     first_name VARCHAR(250) NOT NULL,
     last_name VARCHAR(250) NOT NULL,
     email VARCHAR(250) UNIQUE NOT NULL,
-    phone_number VARCHAR(250) UNIQUE NOT NULL
+    phone_number VARCHAR(250) UNIQUE NOT NULL,
+    password VARCHAR(250) NOT NULL,
+    session_id INT REFERENCES sessions(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS members (

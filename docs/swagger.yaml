@@ -1,4 +1,22 @@
-basePath: /
+basePath: /api/v1
+definitions:
+  domain.SignInInput:
+    properties:
+      password:
+        type: string
+      phone_number:
+        type: string
+    required:
+    - password
+    - phone_number
+    type: object
+  service.Tokens:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
 host: localhost:8000
 info:
   contact: {}
@@ -6,10 +24,25 @@ info:
   title: Gym Manager API
   version: "1.0"
 paths:
-  /manager/:
+  /manager/sign-in:
     post:
+      consumes:
+      - application/json
       description: manager sign in
-      responses: {}
+      parameters:
+      - description: sign up info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SignInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service.Tokens'
       summary: Manager SignIn
       tags:
       - manager-auth
