@@ -1,11 +1,9 @@
 package service
 
 import (
-	"context"
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"github.com/vadimpk/go-gym-manager-api/internal/repository"
 	"github.com/vadimpk/go-gym-manager-api/pkg/auth"
-	"log"
 	"strconv"
 	"time"
 )
@@ -22,20 +20,23 @@ func NewManagerService(repo repository.Managers, tokenManager auth.TokenManager,
 	return &ManagerService{repo: repo, tokenManager: tokenManager, accessTokenTTL: accessTokenTTL, refreshTokenTTL: refreshTokenTTL}
 }
 
-func (s *ManagerService) SignIn(ctx context.Context, input domain.SignInInput) (Tokens, error) {
-	manager, err := s.repo.GetByCredentials(ctx, input)
+func (s *ManagerService) SignIn(input domain.SignInInput) (Tokens, error) {
+	manager, err := s.repo.GetByCredentials(input)
 	if err != nil {
 		return Tokens{}, err
 	}
-	log.Println(manager)
-	return s.createSession(ctx, manager.ID)
+	return s.createSession(manager.ID)
 }
 
-func (s *ManagerService) RefreshTokens(ctx context.Context, refreshToken string) (Tokens, error) {
-	return Tokens{}, nil
+func (s *ManagerService) RefreshTokens(refreshToken string) (Tokens, error) {
+	managerID, err := s.repo.GetByRefreshToken(refreshToken)
+	if err != nil {
+		return Tokens{}, err
+	}
+	return s.createSession(managerID)
 }
 
-func (s *ManagerService) createSession(ctx context.Context, managerID int) (Tokens, error) {
+func (s *ManagerService) createSession(managerID int) (Tokens, error) {
 	var (
 		res Tokens
 		err error
@@ -56,7 +57,7 @@ func (s *ManagerService) createSession(ctx context.Context, managerID int) (Toke
 		ExpiresAt:    time.Now().Add(s.refreshTokenTTL),
 	}
 
-	err = s.repo.SetSession(ctx, managerID, session)
+	err = s.repo.SetSession(managerID, session)
 
 	return res, err
 }

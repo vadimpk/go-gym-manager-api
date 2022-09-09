@@ -1,13 +1,12 @@
 package domain
 
 type Manager struct {
-	ID          int    `json:"id"`
+	ID          int    `json:"id" db:"id"`
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
 	PhoneNumber string `json:"phone_number"`
 	Password    string `json:"password"`
 	Email       string `json:"email"`
-	SessionID   string `json:"session_id"`
 }
 
 type SignInInput struct {

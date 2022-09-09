@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"context"
 	"github.com/jmoiron/sqlx"
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"github.com/vadimpk/go-gym-manager-api/internal/repository/postgres"
@@ -18,7 +17,7 @@ func NewRepositories(db *sqlx.DB) *Repositories {
 }
 
 type Managers interface {
-	GetByCredentials(ctx context.Context, input domain.SignInInput) (domain.Manager, error)
-	GetByRefreshToken(ctx context.Context, refreshToken string) (domain.Manager, error)
-	SetSession(ctx context.Context, managerID int, session domain.Session) error
+	GetByCredentials(input domain.SignInInput) (domain.Manager, error)
+	GetByRefreshToken(refreshToken string) (int, error)
+	SetSession(managerID int, session domain.Session) error
 }

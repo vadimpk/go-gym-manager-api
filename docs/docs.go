@@ -16,6 +16,40 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/manager/auth/refresh": {
+            "post": {
+                "description": "manager refresh",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "manager-auth"
+                ],
+                "summary": "Manager Refresh Tokens",
+                "parameters": [
+                    {
+                        "description": "refresh info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.RefreshInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/service.Tokens"
+                        }
+                    }
+                }
+            }
+        },
         "/manager/sign-in": {
             "post": {
                 "description": "manager sign in",
@@ -52,6 +86,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "domain.RefreshInput": {
+            "type": "object",
+            "required": [
+                "refresh_token"
+            ],
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.SignInInput": {
             "type": "object",
             "required": [
