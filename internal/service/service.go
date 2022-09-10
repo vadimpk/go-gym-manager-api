@@ -11,6 +11,7 @@ type Services struct {
 	Managers
 	Members
 	Memberships
+	Trainers
 }
 
 type Managers interface {
@@ -35,6 +36,13 @@ type Memberships interface {
 	DeleteByID(id int) error
 }
 
+type Trainers interface {
+	CreateNew(input domain.TrainerCreateInput) (int, error)
+	GetByID(id int) (domain.Trainer, error)
+	UpdateByID(id int, input domain.TrainerUpdateInput) error
+	DeleteByID(id int) error
+}
+
 type Tokens struct {
 	AccessToken  string
 	RefreshToken string
@@ -44,9 +52,11 @@ func NewServices(cfg *config.Config, tokenManager auth.TokenManager, repos *repo
 	managerService := NewManagerService(repos.Managers, tokenManager, cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
 	membersService := NewMembersService(repos.Members)
 	membershipsService := NewMembershipsService(repos.Memberships)
+	trainersService := NewTrainersService(repos.Trainers)
 	return &Services{
 		Managers:    managerService,
 		Members:     membersService,
 		Memberships: membershipsService,
+		Trainers:    trainersService,
 	}
 }

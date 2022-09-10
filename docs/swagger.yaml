@@ -65,6 +65,42 @@ definitions:
     - password
     - phone_number
     type: object
+  domain.TrainerCreateInput:
+    properties:
+      description:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        type: string
+      price:
+        type: integer
+    required:
+    - email
+    - first_name
+    - last_name
+    - phone_number
+    - price
+    type: object
+  domain.TrainerUpdateInput:
+    properties:
+      description:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        type: string
+      price:
+        type: integer
+    type: object
   service.Tokens:
     properties:
       accessToken:
@@ -493,6 +529,165 @@ paths:
       summary: Manager Sign In
       tags:
       - manager-auth
+  /managers/trainers/create:
+    post:
+      consumes:
+      - application/json
+      description: trainer creation
+      parameters:
+      - description: trainer info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.TrainerCreateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.dataResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Create trainer
+      tags:
+      - trainers
+  /managers/trainers/delete/{id}:
+    delete:
+      description: delete trainer by id
+      parameters:
+      - description: Trainer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Delete Trainer By ID
+      tags:
+      - trainers
+  /managers/trainers/get/{id}:
+    get:
+      description: get trainer by id
+      parameters:
+      - description: trainer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.dataResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Get trainer By ID
+      tags:
+      - trainers
+  /managers/trainers/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: update trainer by id with json body
+      parameters:
+      - description: Trainer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: trainer update info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.TrainerUpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Update Trainer By ID
+      tags:
+      - trainers
 securityDefinitions:
   ManagerAuth:
     in: header
