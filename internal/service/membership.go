@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"github.com/vadimpk/go-gym-manager-api/internal/repository"
 	"time"
@@ -18,7 +17,7 @@ func NewMembershipsService(repo repository.Memberships) *MembershipsService {
 func (s *MembershipsService) CreateNew(input domain.MembershipCreateInput) (int, error) {
 	_, err := time.ParseDuration(input.Duration)
 	if err != nil {
-		return 0, errors.New(errBadRequest)
+		return 0, err
 	}
 	return s.repo.Create(input)
 }
@@ -49,7 +48,7 @@ func (s *MembershipsService) UpdateByID(id int, input domain.MembershipUpdateInp
 		input.Duration = membership.Duration
 	} else {
 		if _, err := time.ParseDuration(input.Duration); err != nil {
-			return errors.New(errBadRequest)
+			return err
 		}
 	}
 	return s.repo.Update(id, input)

@@ -21,3 +21,15 @@ type MemberUpdateInput struct {
 	LastName    string `json:"last_name"`
 	PhoneNumber string `json:"phone_number"`
 }
+
+type MembersMembership struct {
+	ID           int       `json:"id" db:"id"`
+	MemberID     int       `json:"member_id" db:"member_id"`
+	MembershipID int       `json:"membership_id" db:"membership_id"`
+	ExpiresAt    time.Time `json:"membership_expiration" db:"membership_expiration"`
+}
+
+type MembersMembershipResponse struct {
+	Membership Membership `json:"membership"`
+	ExpiresAt  time.Time  `json:"membership_expiration"`
+}

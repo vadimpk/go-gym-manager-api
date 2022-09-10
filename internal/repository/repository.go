@@ -37,7 +37,7 @@ type Members interface {
 	Delete(id int) error
 	SetMembership(memberID int, membershipID int, expiresAt time.Time) error
 	UpdateMembership(memberID int, membershipID int, expiresAt time.Time) error
-	GetMembership(memberID int) (int, error)
+	GetMembership(memberID int) (domain.MembersMembership, error)
 	DeleteMembership(memberID int) error
 }
 

@@ -31,6 +31,7 @@ type Members interface {
 	UpdateByID(id int, input domain.MemberUpdateInput) error
 	DeleteByID(id int) error
 	SetMembership(memberID int, membershipID int) error
+	GetMembership(memberID int) (domain.MembersMembershipResponse, error)
 	DeleteMembership(memberID int) error
 }
 

@@ -63,11 +63,11 @@ func (r *MemberRepo) UpdateMembership(memberID int, membershipID int, expiresAt 
 	return err
 }
 
-func (r *MemberRepo) GetMembership(memberID int) (int, error) {
-	var membershipID int
-	query := fmt.Sprintf("SELECT membership_id FROM %s WHERE member_id = $1", membersMembershipsTable)
-	err := r.db.Get(&membershipID, query, memberID)
-	return membershipID, err
+func (r *MemberRepo) GetMembership(memberID int) (domain.MembersMembership, error) {
+	var membership domain.MembersMembership
+	query := fmt.Sprintf("SELECT * FROM %s WHERE member_id = $1", membersMembershipsTable)
+	err := r.db.Get(&membership, query, memberID)
+	return membership, err
 }
 
 func (r *MemberRepo) DeleteMembership(memberID int) error {

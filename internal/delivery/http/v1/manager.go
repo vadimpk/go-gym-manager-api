@@ -25,7 +25,8 @@ func (h *Handler) initManagerRoutes(api *gin.RouterGroup) {
 				member.PUT("/update/:id", h.memberUpdateByID)
 				member.DELETE("/delete/:id", h.memberDeleteByID)
 				member.POST("/set_membership/:id/:membership_id", h.memberSetMembership)
-				member.DELETE("/delete_membership/:id/", h.memberDeleteMembership)
+				member.GET("/get_membership/:id", h.memberGetMembership)
+				member.DELETE("/delete_membership/:id", h.memberDeleteMembership)
 			}
 
 			membership := auth.Group("/memberships")

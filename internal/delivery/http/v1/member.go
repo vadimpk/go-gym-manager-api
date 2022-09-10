@@ -160,10 +160,41 @@ func (h *Handler) memberSetMembership(c *gin.Context) {
 	}
 
 	if err := h.services.Members.SetMembership(memberID, membershipID); err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err)
 		return
 	}
 	newResponse(c, http.StatusOK, "Membership set successfully")
+}
+
+// @Summary Get Member's Membership
+// @Security ManagerAuth
+// @Tags members
+// @Description get membership from member
+// @ModuleID memberGetMembership
+// @Produce  json
+// @Param id path int true "Member ID"
+// @Success 200 {object} dataResponse
+// @Failure 400,404 {object} response
+// @Failure 500 {object} response
+// @Failure default {object} response
+// @Router       /managers/members/get_membership/{id} [get]
+func (h *Handler) memberGetMembership(c *gin.Context) {
+	memberID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
+
+	res, err := h.services.Members.GetMembership(memberID)
+	if err != nil {
+		h.handleErrors(c, err)
+		return
+	}
+
+	newDataResponse(c, http.StatusOK, dataResponse{
+		Message: "Membership found",
+		Data:    res,
+	})
 }
 
 // @Summary Delete Member's Membership

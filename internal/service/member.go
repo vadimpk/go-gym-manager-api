@@ -80,6 +80,22 @@ func (s *MembersService) SetMembership(memberID int, membershipID int) error {
 	return s.repo.UpdateMembership(memberID, membershipID, expiresAt)
 }
 
+func (s *MembersService) GetMembership(memberID int) (domain.MembersMembershipResponse, error) {
+	currentMembership, err := s.repo.GetMembership(memberID)
+	if err != nil {
+		return domain.MembersMembershipResponse{}, err
+	}
+	membershipInfo, err := s.membershipsRepo.GetByID(currentMembership.MembershipID)
+	if err != nil {
+		return domain.MembersMembershipResponse{}, err
+	}
+
+	return domain.MembersMembershipResponse{
+		Membership: membershipInfo,
+		ExpiresAt:  currentMembership.ExpiresAt,
+	}, nil
+}
+
 func (s *MembersService) DeleteMembership(memberID int) error {
 	// check if member has active membership
 	_, err := s.repo.GetMembership(memberID)
