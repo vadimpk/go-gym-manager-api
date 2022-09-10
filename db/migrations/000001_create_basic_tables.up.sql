@@ -52,7 +52,6 @@ CREATE TABLE IF NOT EXISTS members_visits (
     arrived_at TIMESTAMP NOT NULL,
     left_at TIMESTAMP,
     member_id INT REFERENCES members(id) ON DELETE CASCADE NOT NULL,
-    trainer_id INT REFERENCES trainers(id) ON DELETE CASCADE,
     manager_id INT REFERENCES managers(id) ON DELETE CASCADE NOT NULL
 );
 
@@ -62,18 +61,4 @@ CREATE TABLE IF NOT EXISTS trainers_visits (
     left_at TIMESTAMP,
     trainer_id INT REFERENCES trainers(id) ON DELETE CASCADE NOT NULL,
     manager_id INT REFERENCES managers(id) ON DELETE CASCADE NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS programs (
-    id serial PRIMARY KEY,
-    short_name VARCHAR(250) NOT NULL,
-    description VARCHAR(250) NOT NULL,
-    price INT NOT NULL,
-    trainer_id INT REFERENCES trainers(id) ON DELETE CASCADE NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS programs_members (
-    id serial PRIMARY KEY,
-    program_id INT REFERENCES programs(id) ON DELETE CASCADE NOT NULL,
-    member_id INT REFERENCES members(id) ON DELETE CASCADE NOT NULL
 );
