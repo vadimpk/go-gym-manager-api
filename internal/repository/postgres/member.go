@@ -15,7 +15,7 @@ func NewMemberRepo(db *sqlx.DB) *MemberRepo {
 	return &MemberRepo{db: db}
 }
 
-func (r *MemberRepo) Create(input domain.MemberCreate) (int, error) {
+func (r *MemberRepo) Create(input domain.MemberCreateInput) (int, error) {
 	query := fmt.Sprintf("INSERT INTO %s (first_name, last_name, phone_number, joined_at) VALUES ($1, $2, $3, $4) RETURNING id", membersTable)
 	row := r.db.QueryRowx(query, input.FirstName, input.LastName, input.PhoneNumber, "NOW()")
 
@@ -40,7 +40,7 @@ func (r *MemberRepo) GetByPhoneNumber(num string) (domain.Member, error) {
 	return member, err
 }
 
-func (r *MemberRepo) Update(id int, input domain.MemberUpdate) error {
+func (r *MemberRepo) Update(id int, input domain.MemberUpdateInput) error {
 	query := fmt.Sprintf("UPDATE %s SET first_name = $1, last_name = $2, phone_number = $3 WHERE id = $4", membersTable)
 	_, err := r.db.Exec(query, input.FirstName, input.LastName, input.PhoneNumber, id)
 	return err
@@ -51,13 +51,27 @@ func (r *MemberRepo) Delete(id int) error {
 	return err
 }
 
-func (r *MemberRepo) SetMembership(id int, membershipID int) error {
-	query := fmt.Sprintf("UPDATE %s SET memberhip_id = $1 WHERE id = $2", membersTable)
-	_, err := r.db.Exec(query, membershipID, id)
+func (r *MemberRepo) SetMembership(memberID int, membershipID int, expiresAt time.Time) error {
+	query := fmt.Sprintf("INSERT INTO %s (membership_id, member_id, membership_expiration) VALUES ($1, $2, $3)", membersMembershipsTable)
+	_, err := r.db.Exec(query, membershipID, memberID, expiresAt)
 	return err
 }
-func (r *MemberRepo) DeleteMembership(id int) error {
-	query := fmt.Sprintf("UPDATE %s SET memberhip_id = $1, expires_at = $2 WHERE id = $2", membersTable)
-	_, err := r.db.Exec(query, 0, time.Now(), id)
+
+func (r *MemberRepo) UpdateMembership(memberID int, membershipID int, expiresAt time.Time) error {
+	query := fmt.Sprintf("UPDATE %s SET membership_id = $1, membership_expiration = $2 WHERE member_id = $3", membersMembershipsTable)
+	_, err := r.db.Exec(query, membershipID, expiresAt, memberID)
+	return err
+}
+
+func (r *MemberRepo) GetMembership(memberID int) (int, error) {
+	var membershipID int
+	query := fmt.Sprintf("SELECT membership_id FROM %s WHERE member_id = $1", membersMembershipsTable)
+	err := r.db.Get(&membershipID, query, memberID)
+	return membershipID, err
+}
+
+func (r *MemberRepo) DeleteMembership(memberID int) error {
+	query := fmt.Sprintf("DELETE FROM %s WHERE member_id = $1", membersMembershipsTable)
+	_, err := r.db.Exec(query, memberID)
 	return err
 }

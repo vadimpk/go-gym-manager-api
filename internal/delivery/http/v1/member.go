@@ -15,14 +15,14 @@ import (
 // @ModuleID memberCreateNew
 // @Accept  json
 // @Produce  json
-// @Param input body domain.MemberCreate true "member info"
+// @Param input body domain.MemberCreateInput true "member info"
 // @Success 200 {object} dataResponse
 // @Failure 400,404 {object} response
 // @Failure 500 {object} response
 // @Failure default {object} response
 // @Router       /managers/members/create [post]
 func (h *Handler) memberCreateNew(c *gin.Context) {
-	var input domain.MemberCreate
+	var input domain.MemberCreateInput
 	if err := c.BindJSON(&input); err != nil {
 		h.handleErrors(c, err)
 		return
@@ -79,7 +79,7 @@ func (h *Handler) memberGetByID(c *gin.Context) {
 // @Accept json
 // @Produce  json
 // @Param id path int true "Member ID"
-// @Param input body domain.MemberUpdate true "member update info"
+// @Param input body domain.MemberUpdateInput true "member update info"
 // @Success 200 {object} response
 // @Failure 400,404 {object} response
 // @Failure 500 {object} response
@@ -92,7 +92,7 @@ func (h *Handler) memberUpdateByID(c *gin.Context) {
 		return
 	}
 
-	var input domain.MemberUpdate
+	var input domain.MemberUpdateInput
 	if err := c.BindJSON(&input); err != nil {
 		h.handleErrors(c, err)
 		return
@@ -133,10 +133,61 @@ func (h *Handler) memberDeleteByID(c *gin.Context) {
 	newResponse(c, http.StatusOK, "Member deleted successfully")
 }
 
+// @Summary Set Membership
+// @Security ManagerAuth
+// @Tags members
+// @Description set membership for member
+// @ModuleID memberSetMembership
+// @Produce  json
+// @Param id path int true "Member ID"
+// @Param membership_id path int true "Membership ID"
+// @Success 200 {object} response
+// @Failure 400,404 {object} response
+// @Failure 500 {object} response
+// @Failure default {object} response
+// @Router       /managers/members/set_membership/{id}/{membership_id} [post]
 func (h *Handler) memberSetMembership(c *gin.Context) {
+	memberID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
 
+	membershipID, err := strconv.Atoi(c.Param("membership_id"))
+	if err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
+
+	if err := h.services.Members.SetMembership(memberID, membershipID); err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
+	newResponse(c, http.StatusOK, "Membership set successfully")
 }
 
+// @Summary Delete Member's Membership
+// @Security ManagerAuth
+// @Tags members
+// @Description delete membership from member
+// @ModuleID memberDeleteMembership
+// @Produce  json
+// @Param id path int true "Member ID"
+// @Success 200 {object} response
+// @Failure 400,404 {object} response
+// @Failure 500 {object} response
+// @Failure default {object} response
+// @Router       /managers/members/delete_membership/{id} [delete]
 func (h *Handler) memberDeleteMembership(c *gin.Context) {
+	memberID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
 
+	if err := h.services.Members.DeleteMembership(memberID); err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
+	newResponse(c, http.StatusOK, "Membership deleted successfully")
 }

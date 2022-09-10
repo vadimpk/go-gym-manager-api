@@ -7,6 +7,11 @@ import (
 	"github.com/vadimpk/go-gym-manager-api/pkg/auth"
 )
 
+const (
+	errNotInDB    = "sql: no rows in result set"
+	errBadRequest = "bad request"
+)
+
 type Services struct {
 	Managers
 	Members
@@ -20,13 +25,13 @@ type Managers interface {
 }
 
 type Members interface {
-	CreateNew(input domain.MemberCreate) (int, error)
+	CreateNew(input domain.MemberCreateInput) (int, error)
 	GetByID(id int) (domain.Member, error)
 	GetByPhoneNumber(num string) (domain.Member, error)
-	UpdateByID(id int, input domain.MemberUpdate) error
+	UpdateByID(id int, input domain.MemberUpdateInput) error
 	DeleteByID(id int) error
-	SetMembership(id int, membershipID int) error
-	DeleteMembership(id int) error
+	SetMembership(memberID int, membershipID int) error
+	DeleteMembership(memberID int) error
 }
 
 type Memberships interface {
@@ -50,7 +55,7 @@ type Tokens struct {
 
 func NewServices(cfg *config.Config, tokenManager auth.TokenManager, repos *repository.Repositories) *Services {
 	managerService := NewManagerService(repos.Managers, tokenManager, cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
-	membersService := NewMembersService(repos.Members)
+	membersService := NewMembersService(repos.Members, repos.Memberships)
 	membershipsService := NewMembershipsService(repos.Memberships)
 	trainersService := NewTrainersService(repos.Trainers)
 	return &Services{

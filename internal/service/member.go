@@ -3,17 +3,19 @@ package service
 import (
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"github.com/vadimpk/go-gym-manager-api/internal/repository"
+	"time"
 )
 
 type MembersService struct {
-	repo repository.Members
+	repo            repository.Members
+	membershipsRepo repository.Memberships
 }
 
-func NewMembersService(repo repository.Members) *MembersService {
-	return &MembersService{repo: repo}
+func NewMembersService(repo repository.Members, membershipsRepo repository.Memberships) *MembersService {
+	return &MembersService{repo: repo, membershipsRepo: membershipsRepo}
 }
 
-func (s *MembersService) CreateNew(input domain.MemberCreate) (int, error) {
+func (s *MembersService) CreateNew(input domain.MemberCreateInput) (int, error) {
 	return s.repo.Create(input)
 }
 
@@ -25,7 +27,7 @@ func (s *MembersService) GetByPhoneNumber(num string) (domain.Member, error) {
 	return s.repo.GetByPhoneNumber(num)
 }
 
-func (s *MembersService) UpdateByID(id int, input domain.MemberUpdate) error {
+func (s *MembersService) UpdateByID(id int, input domain.MemberUpdateInput) error {
 	member, err := s.repo.GetByID(id)
 	if err != nil {
 		return err
@@ -56,9 +58,33 @@ func (s *MembersService) DeleteByID(id int) error {
 	return s.repo.Delete(id)
 }
 
-func (s *MembersService) SetMembership(id int, membershipID int) error {
-	return s.repo.SetMembership(id, membershipID)
+func (s *MembersService) SetMembership(memberID int, membershipID int) error {
+	// check if membership exists
+	membershipNew, err := s.membershipsRepo.GetByID(membershipID)
+	if err != nil {
+		return err
+	}
+
+	duration, _ := time.ParseDuration(membershipNew.Duration)
+	expiresAt := time.Now().Add(duration)
+
+	// check if member has active membership
+	_, err = s.repo.GetMembership(memberID)
+	if err != nil {
+		if err.Error() == errNotInDB {
+			return s.repo.SetMembership(memberID, membershipID, expiresAt)
+		}
+		return err
+	}
+	// TODO maybe setting new membership shouldn't be allowed if current membership hasn't expired yet
+	return s.repo.UpdateMembership(memberID, membershipID, expiresAt)
 }
-func (s *MembersService) DeleteMembership(id int) error {
-	return s.repo.DeleteMembership(id)
+
+func (s *MembersService) DeleteMembership(memberID int) error {
+	// check if member has active membership
+	_, err := s.repo.GetMembership(memberID)
+	if err != nil {
+		return err
+	}
+	return s.repo.DeleteMembership(memberID)
 }

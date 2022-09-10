@@ -10,13 +10,13 @@ type Member struct {
 	JoinedAt    time.Time `json:"joined_at" db:"joined_at"`
 }
 
-type MemberCreate struct {
+type MemberCreateInput struct {
 	FirstName   string `json:"first_name" binding:"required"`
 	LastName    string `json:"last_name" binding:"required"`
 	PhoneNumber string `json:"phone_number" binding:"required"`
 }
 
-type MemberUpdate struct {
+type MemberUpdateInput struct {
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
 	PhoneNumber string `json:"phone_number"`

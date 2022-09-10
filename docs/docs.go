@@ -114,7 +114,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.MemberCreate"
+                            "$ref": "#/definitions/domain.MemberCreateInput"
                         }
                     }
                 ],
@@ -167,6 +167,64 @@ const docTemplate = `{
                     "members"
                 ],
                 "summary": "Delete Member By ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Member ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    }
+                }
+            }
+        },
+        "/managers/members/delete_membership/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ManagerAuth": []
+                    }
+                ],
+                "description": "delete membership from member",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Delete Member's Membership",
                 "parameters": [
                     {
                         "type": "integer",
@@ -268,6 +326,71 @@ const docTemplate = `{
                 }
             }
         },
+        "/managers/members/set_membership/{id}/{membership_id}": {
+            "post": {
+                "security": [
+                    {
+                        "ManagerAuth": []
+                    }
+                ],
+                "description": "set membership for member",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Set Membership",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Member ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Membership ID",
+                        "name": "membership_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    }
+                }
+            }
+        },
         "/managers/members/update/{id}": {
             "put": {
                 "security": [
@@ -300,7 +423,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.MemberUpdate"
+                            "$ref": "#/definitions/domain.MemberUpdateInput"
                         }
                     }
                 ],
@@ -896,7 +1019,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.MemberCreate": {
+        "domain.MemberCreateInput": {
             "type": "object",
             "required": [
                 "first_name",
@@ -915,7 +1038,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.MemberUpdate": {
+        "domain.MemberUpdateInput": {
             "type": "object",
             "properties": {
                 "first_name": {

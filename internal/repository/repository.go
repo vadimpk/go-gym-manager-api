@@ -4,6 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"github.com/vadimpk/go-gym-manager-api/internal/repository/postgres"
+	"time"
 )
 
 type Repositories struct {
@@ -29,13 +30,15 @@ type Managers interface {
 }
 
 type Members interface {
-	Create(input domain.MemberCreate) (int, error)
+	Create(input domain.MemberCreateInput) (int, error)
 	GetByID(id int) (domain.Member, error)
 	GetByPhoneNumber(num string) (domain.Member, error)
-	Update(id int, input domain.MemberUpdate) error
+	Update(id int, input domain.MemberUpdateInput) error
 	Delete(id int) error
-	SetMembership(id int, membershipID int) error
-	DeleteMembership(id int) error
+	SetMembership(memberID int, membershipID int, expiresAt time.Time) error
+	UpdateMembership(memberID int, membershipID int, expiresAt time.Time) error
+	GetMembership(memberID int) (int, error)
+	DeleteMembership(memberID int) error
 }
 
 type Memberships interface {
