@@ -9,12 +9,14 @@ import (
 type Repositories struct {
 	Managers
 	Members
+	Memberships
 }
 
 func NewRepositories(db *sqlx.DB) *Repositories {
 	return &Repositories{
-		Managers: postgres.NewManagerRepo(db),
-		Members:  postgres.NewMemberRepo(db),
+		Managers:    postgres.NewManagerRepo(db),
+		Members:     postgres.NewMemberRepo(db),
+		Memberships: postgres.NewMembershipRepo(db),
 	}
 }
 
@@ -32,4 +34,11 @@ type Members interface {
 	Delete(id int) error
 	SetMembership(id int, membershipID int) error
 	DeleteMembership(id int) error
+}
+
+type Memberships interface {
+	Create(input domain.MembershipCreateInput) (int, error)
+	GetByID(id int) (domain.Membership, error)
+	Update(id int, input domain.MembershipUpdateInput) error
+	Delete(id int) error
 }

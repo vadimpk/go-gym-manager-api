@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	managersTable = "managers"
-	sessionsTable = "sessions"
-	membersTable  = "members"
+	managersTable    = "managers"
+	sessionsTable    = "sessions"
+	membersTable     = "members"
+	membershipsTable = "memberships"
 )
 
 func NewPostgresDB(cfg *config.Config) (*sqlx.DB, error) {

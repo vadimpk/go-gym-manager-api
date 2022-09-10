@@ -10,6 +10,7 @@ import (
 type Services struct {
 	Managers
 	Members
+	Memberships
 }
 
 type Managers interface {
@@ -27,6 +28,13 @@ type Members interface {
 	DeleteMembership(id int) error
 }
 
+type Memberships interface {
+	CreateNew(input domain.MembershipCreateInput) (int, error)
+	GetByID(id int) (domain.Membership, error)
+	UpdateByID(id int, input domain.MembershipUpdateInput) error
+	DeleteByID(id int) error
+}
+
 type Tokens struct {
 	AccessToken  string
 	RefreshToken string
@@ -35,8 +43,10 @@ type Tokens struct {
 func NewServices(cfg *config.Config, tokenManager auth.TokenManager, repos *repository.Repositories) *Services {
 	managerService := NewManagerService(repos.Managers, tokenManager, cfg.Auth.AccessTokenTTL, cfg.Auth.RefreshTokenTTL)
 	membersService := NewMembersService(repos.Members)
+	membershipsService := NewMembershipsService(repos.Memberships)
 	return &Services{
-		Managers: managerService,
-		Members:  membersService,
+		Managers:    managerService,
+		Members:     membersService,
+		Memberships: membershipsService,
 	}
 }

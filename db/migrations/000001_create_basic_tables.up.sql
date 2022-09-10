@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS memberships (
     short_name VARCHAR(250) NOT NULL,
     description VARCHAR,
     price INT NOT NULL,
-    duration TIME NOT NULL
+    duration VARCHAR NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS trainers (

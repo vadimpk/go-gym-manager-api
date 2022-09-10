@@ -27,6 +27,14 @@ func (h *Handler) initManagerRoutes(api *gin.RouterGroup) {
 				member.PUT("/set_membership/:id/:membership_id", h.memberSetMembership)
 				member.PUT("/delete_membership/:id/:membership_id", h.memberDeleteMembership)
 			}
+
+			membership := auth.Group("/memberships")
+			{
+				membership.POST("/create", h.membershipCreateNew)
+				membership.GET("/get/:id", h.membershipGetByID)
+				membership.PUT("/update/:id", h.membershipUpdateByID)
+				membership.DELETE("/delete/:id", h.membershipDeleteByID)
+			}
 		}
 	}
 }

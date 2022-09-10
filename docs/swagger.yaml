@@ -25,6 +25,32 @@ definitions:
       phone_number:
         type: string
     type: object
+  domain.MembershipCreateInput:
+    properties:
+      description:
+        type: string
+      duration:
+        type: string
+      price:
+        type: integer
+      short_name:
+        type: string
+    required:
+    - duration
+    - price
+    - short_name
+    type: object
+  domain.MembershipUpdateInput:
+    properties:
+      description:
+        type: string
+      duration:
+        type: string
+      price:
+        type: integer
+      short_name:
+        type: string
+    type: object
   domain.RefreshInput:
     properties:
       refresh_token:
@@ -273,6 +299,165 @@ paths:
       summary: Update Member By ID
       tags:
       - members
+  /managers/memberships/create:
+    post:
+      consumes:
+      - application/json
+      description: membership creation
+      parameters:
+      - description: membership info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.MembershipCreateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.dataResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Create Membership
+      tags:
+      - memberships
+  /managers/memberships/delete/{id}:
+    delete:
+      description: delete membership by id
+      parameters:
+      - description: Membership ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Delete Membership By ID
+      tags:
+      - memberships
+  /managers/memberships/get/{id}:
+    get:
+      description: get membership by id
+      parameters:
+      - description: Membership ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.dataResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Get Membership By ID
+      tags:
+      - memberships
+  /managers/memberships/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: update membership by id with json body
+      parameters:
+      - description: Membership ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: membership update info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.MembershipUpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Update Membership By ID
+      tags:
+      - memberships
   /managers/sign-in:
     post:
       consumes:
