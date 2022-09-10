@@ -39,6 +39,9 @@ type Members interface {
 	UpdateMembership(memberID int, membershipID int, expiresAt time.Time) error
 	GetMembership(memberID int) (domain.MembersMembership, error)
 	DeleteMembership(memberID int) error
+	GetLatestVisit(memberID int) (domain.MembersVisits, error)
+	SetNewVisit(memberID int, managerID int) error
+	EndVisit(id int) error
 }
 
 type Memberships interface {

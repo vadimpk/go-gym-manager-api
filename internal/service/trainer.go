@@ -66,7 +66,7 @@ func (s *TrainersService) SetNewVisit(trainerID int, managerID int) error {
 		return err
 	}
 	if visit.LeftAt.IsZero() {
-		return errors.New("member is still in the gym")
+		return errors.New("trainer is still in the gym")
 	}
 	return s.repo.SetNewVisit(trainerID, managerID)
 }
@@ -75,12 +75,12 @@ func (s *TrainersService) EndVisit(trainerID int) error {
 	visit, err := s.repo.GetLatestVisit(trainerID)
 	if err != nil {
 		if err.Error() == errNotInDB {
-			return errors.New("member is not in the gym")
+			return errors.New("trainer is not in the gym")
 		}
 		return err
 	}
 	if !visit.LeftAt.IsZero() {
-		return errors.New("member is not in the gym")
+		return errors.New("trainer is not in the gym")
 	}
 	return s.repo.EndVisit(visit.ID)
 }

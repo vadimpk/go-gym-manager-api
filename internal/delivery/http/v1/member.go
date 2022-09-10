@@ -222,3 +222,62 @@ func (h *Handler) memberDeleteMembership(c *gin.Context) {
 	}
 	newResponse(c, http.StatusOK, "Membership deleted successfully")
 }
+
+// @Summary Add Member Visit
+// @Security ManagerAuth
+// @Tags members
+// @Description add member visit
+// @ModuleID memberArrived
+// @Produce  json
+// @Param id path int true "Member ID"
+// @Success 200 {object} response
+// @Failure 400,404 {object} response
+// @Failure 500 {object} response
+// @Failure default {object} response
+// @Router       /managers/members/arrived/{id} [post]
+func (h *Handler) memberArrived(c *gin.Context) {
+	managerID, err := h.getManagerID(c)
+	if err != nil {
+		return
+	}
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
+
+	err = h.services.Members.SetNewVisit(id, managerID)
+	if err != nil {
+		h.handleErrors(c, err)
+		return
+	}
+	newResponse(c, http.StatusOK, "visit set successfully")
+}
+
+// @Summary End Member Visit
+// @Security ManagerAuth
+// @Tags members
+// @Description end member visit
+// @ModuleID memberLeft
+// @Produce  json
+// @Param id path int true "Member ID"
+// @Success 200 {object} response
+// @Failure 400,404 {object} response
+// @Failure 500 {object} response
+// @Failure default {object} response
+// @Router       /managers/members/left/{id} [post]
+func (h *Handler) memberLeft(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
+
+	err = h.services.Members.EndVisit(id)
+	if err != nil {
+		h.handleErrors(c, err)
+		return
+	}
+	newResponse(c, http.StatusOK, "visit ended successfully")
+}

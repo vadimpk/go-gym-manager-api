@@ -146,7 +146,6 @@ func (h *Handler) trainerDeleteByID(c *gin.Context) {
 // @Failure default {object} response
 // @Router       /managers/trainers/arrived/{id} [post]
 func (h *Handler) trainerArrived(c *gin.Context) {
-
 	managerID, err := h.getManagerID(c)
 	if err != nil {
 		return

@@ -52,6 +52,7 @@ func (r *TrainerRepo) GetLatestVisit(trainerID int) (domain.TrainersVisits, erro
 }
 
 func (r *TrainerRepo) SetNewVisit(trainerID int, managerID int) error {
+	// you should optimize data so that it doesn't have null values when working with go
 	nullTime := new(domain.TrainersVisits).LeftAt
 	query := fmt.Sprintf("INSERT INTO %s (manager_id, trainer_id, arrived_at, left_at) VALUES ($1, $2, $3, $4)", trainersVisitsTable)
 	_, err := r.db.Exec(query, managerID, trainerID, "NOW()", nullTime)

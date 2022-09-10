@@ -75,3 +75,24 @@ func (r *MemberRepo) DeleteMembership(memberID int) error {
 	_, err := r.db.Exec(query, memberID)
 	return err
 }
+
+func (r *MemberRepo) GetLatestVisit(memberID int) (domain.MembersVisits, error) {
+	var visit domain.MembersVisits
+	query := fmt.Sprintf("SELECT * FROM %s WHERE member_id = $1 ORDER BY arrived_at DESC LIMIT 1", membersVisitsTable)
+	err := r.db.Get(&visit, query, memberID)
+	return visit, err
+}
+
+func (r *MemberRepo) SetNewVisit(memberID int, managerID int) error {
+	// you should optimize data so that it doesn't have null values when working with go
+	nullTime := new(domain.TrainersVisits).LeftAt
+	query := fmt.Sprintf("INSERT INTO %s (manager_id, member_id, arrived_at, left_at) VALUES ($1, $2, $3, $4)", membersVisitsTable)
+	_, err := r.db.Exec(query, managerID, memberID, "NOW()", nullTime)
+	return err
+}
+
+func (r *MemberRepo) EndVisit(id int) error {
+	query := fmt.Sprintf("UPDATE %s SET left_at = $1 WHERE id = $2", membersVisitsTable)
+	_, err := r.db.Exec(query, "NOW()", id)
+	return err
+}

@@ -33,6 +33,8 @@ type Members interface {
 	SetMembership(memberID int, membershipID int) error
 	GetMembership(memberID int) (domain.MembersMembershipResponse, error)
 	DeleteMembership(memberID int) error
+	SetNewVisit(memberID int, managerID int) error
+	EndVisit(memberID int) error
 }
 
 type Memberships interface {

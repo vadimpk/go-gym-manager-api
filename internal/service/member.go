@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"github.com/vadimpk/go-gym-manager-api/internal/repository"
 	"time"
@@ -103,4 +104,32 @@ func (s *MembersService) DeleteMembership(memberID int) error {
 		return err
 	}
 	return s.repo.DeleteMembership(memberID)
+}
+
+func (s *MembersService) SetNewVisit(memberID int, managerID int) error {
+	visit, err := s.repo.GetLatestVisit(memberID)
+	if err != nil {
+		if err.Error() == errNotInDB {
+			return s.repo.SetNewVisit(memberID, managerID)
+		}
+		return err
+	}
+	if visit.LeftAt.IsZero() {
+		return errors.New("member is still in the gym")
+	}
+	return s.repo.SetNewVisit(memberID, managerID)
+}
+
+func (s *MembersService) EndVisit(memberID int) error {
+	visit, err := s.repo.GetLatestVisit(memberID)
+	if err != nil {
+		if err.Error() == errNotInDB {
+			return errors.New("member is not in the gym")
+		}
+		return err
+	}
+	if !visit.LeftAt.IsZero() {
+		return errors.New("member is not in the gym")
+	}
+	return s.repo.EndVisit(visit.ID)
 }
