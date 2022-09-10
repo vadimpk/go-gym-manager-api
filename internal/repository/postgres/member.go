@@ -16,8 +16,8 @@ func NewMemberRepo(db *sqlx.DB) *MemberRepo {
 }
 
 func (r *MemberRepo) Create(input domain.MemberCreate) (int, error) {
-	query := fmt.Sprintf("INSERT INTO %s (first_name, last_name, phone_number, membership_id, joined_at, membership_expiration) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", membersTable)
-	row := r.db.QueryRowx(query, input.FirstName, input.LastName, input.PhoneNumber, input.MembershipID, "NOW()", "NOW()")
+	query := fmt.Sprintf("INSERT INTO %s (first_name, last_name, phone_number, joined_at) VALUES ($1, $2, $3, $4) RETURNING id", membersTable)
+	row := r.db.QueryRowx(query, input.FirstName, input.LastName, input.PhoneNumber, "NOW()")
 
 	var id int
 	if err := row.Scan(&id); err != nil {

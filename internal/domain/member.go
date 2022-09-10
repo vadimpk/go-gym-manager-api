@@ -11,10 +11,9 @@ type Member struct {
 }
 
 type MemberCreate struct {
-	FirstName    string `json:"first_name" binding:"required"`
-	LastName     string `json:"last_name" binding:"required"`
-	PhoneNumber  string `json:"phone_number" binding:"required"`
-	MembershipID int    `json:"membership_id" binding:"required"`
+	FirstName   string `json:"first_name" binding:"required"`
+	LastName    string `json:"last_name" binding:"required"`
+	PhoneNumber string `json:"phone_number" binding:"required"`
 }
 
 type MemberUpdate struct {

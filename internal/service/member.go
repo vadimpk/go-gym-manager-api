@@ -14,7 +14,6 @@ func NewMembersService(repo repository.Members) *MembersService {
 }
 
 func (s *MembersService) CreateNew(input domain.MemberCreate) (int, error) {
-	// TODO check if membership id exists
 	return s.repo.Create(input)
 }
 

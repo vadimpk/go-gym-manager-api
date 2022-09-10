@@ -652,7 +652,6 @@ const docTemplate = `{
             "required": [
                 "first_name",
                 "last_name",
-                "membership_id",
                 "phone_number"
             ],
             "properties": {
@@ -661,9 +660,6 @@ const docTemplate = `{
                 },
                 "last_name": {
                     "type": "string"
-                },
-                "membership_id": {
-                    "type": "integer"
                 },
                 "phone_number": {
                     "type": "string"
