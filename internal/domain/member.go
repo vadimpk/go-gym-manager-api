@@ -3,13 +3,11 @@ package domain
 import "time"
 
 type Member struct {
-	ID                   int       `json:"id" db:"id"`
-	FirstName            string    `json:"first_name" db:"first_name" binding:"required"`
-	LastName             string    `json:"last_name" db:"last_name"  binding:"required"`
-	PhoneNumber          string    `json:"phone_number" db:"phone_number" binding:"required"`
-	MembershipID         int       `json:"membership_id" db:"membership_id"`
-	JoinedAt             time.Time `json:"joined_at" db:"joined_at"`
-	MembershipExpiration time.Time `json:"membership_expiration" db:"membership_expiration"`
+	ID          int       `json:"id" db:"id"`
+	FirstName   string    `json:"first_name" db:"first_name" binding:"required"`
+	LastName    string    `json:"last_name" db:"last_name"  binding:"required"`
+	PhoneNumber string    `json:"phone_number" db:"phone_number" binding:"required"`
+	JoinedAt    time.Time `json:"joined_at" db:"joined_at"`
 }
 
 type MemberCreate struct {

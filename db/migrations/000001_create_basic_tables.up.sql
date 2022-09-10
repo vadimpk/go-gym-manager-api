@@ -37,9 +37,14 @@ CREATE TABLE IF NOT EXISTS members (
     first_name VARCHAR(250) NOT NULL,
     last_name VARCHAR(250) NOT NULL,
     phone_number VARCHAR(250) UNIQUE NOT NULL,
-    membership_id INT REFERENCES memberships(id) ON DELETE CASCADE,
-    joined_at TIMESTAMP NOT NULL,
-    membership_expiration TIMESTAMP
+    joined_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS members_memberships (
+    id serial PRIMARY KEY,
+    membership_id INT REFERENCES memberships(id) ON DELETE CASCADE NOT NULL,
+    member_id INT REFERENCES members(id) ON DELETE CASCADE NOT NULL,
+    membership_expiration TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS members_visits (

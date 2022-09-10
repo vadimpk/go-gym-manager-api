@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS programs_members;
 DROP TABLE IF EXISTS programs;
 DROP TABLE IF EXISTS members_visits;
+DROP TABLE IF EXISTS members_memberships;
 DROP TABLE IF EXISTS members;
 DROP TABLE IF EXISTS memberships;
 DROP TABLE IF EXISTS trainers_visits;
