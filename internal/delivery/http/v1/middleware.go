@@ -3,6 +3,8 @@ package v1
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -37,4 +39,26 @@ func (h *Handler) parseAuthHeader(c *gin.Context) (string, error) {
 	}
 
 	return h.tokenManager.Parse(headerParts[1])
+}
+
+func (h *Handler) getManagerID(c *gin.Context) (int, error) {
+	id, ok := c.Get(managerCtx)
+	if !ok {
+		newResponse(c, http.StatusInternalServerError, "manager id not found")
+		return -1, errors.New("manager id not found")
+	}
+
+	idToStr, ok := id.(string)
+	if !ok {
+		newResponse(c, http.StatusInternalServerError, "manager id not found")
+		return -1, errors.New("manager id not found")
+	}
+
+	idToInt, err := strconv.Atoi(idToStr)
+	if err != nil {
+		newResponse(c, http.StatusInternalServerError, "manager id not found")
+		return -1, errors.New("manager id not found")
+	}
+
+	return idToInt, nil
 }

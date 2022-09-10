@@ -43,6 +43,8 @@ func (h *Handler) initManagerRoutes(api *gin.RouterGroup) {
 				trainer.GET("/get/:id", h.trainerGetByID)
 				trainer.PUT("/update/:id", h.trainerUpdateByID)
 				trainer.DELETE("/delete/:id", h.trainerDeleteByID)
+				trainer.POST("/arrived/:id", h.trainerArrived)
+				trainer.POST("/left/:id", h.trainerLeft)
 			}
 		}
 	}

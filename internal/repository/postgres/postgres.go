@@ -13,6 +13,7 @@ const (
 	membershipsTable        = "memberships"
 	trainersTable           = "trainers"
 	membersMembershipsTable = "members_memberships"
+	trainersVisitsTable     = "trainers_visits"
 )
 
 func NewPostgresDB(cfg *config.Config) (*sqlx.DB, error) {

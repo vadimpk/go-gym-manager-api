@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"github.com/vadimpk/go-gym-manager-api/internal/repository"
 )
@@ -16,9 +17,11 @@ func NewTrainersService(repo repository.Trainers) *TrainersService {
 func (s *TrainersService) CreateNew(input domain.TrainerCreateInput) (int, error) {
 	return s.repo.Create(input)
 }
+
 func (s *TrainersService) GetByID(id int) (domain.Trainer, error) {
 	return s.repo.GetByID(id)
 }
+
 func (s *TrainersService) UpdateByID(id int, input domain.TrainerUpdateInput) error {
 	trainer, err := s.repo.GetByID(id)
 	if err != nil {
@@ -45,10 +48,39 @@ func (s *TrainersService) UpdateByID(id int, input domain.TrainerUpdateInput) er
 
 	return s.repo.Update(id, input)
 }
+
 func (s *TrainersService) DeleteByID(id int) error {
 	_, err := s.repo.GetByID(id)
 	if err != nil {
 		return err
 	}
 	return s.repo.Delete(id)
+}
+
+func (s *TrainersService) SetNewVisit(trainerID int, managerID int) error {
+	visit, err := s.repo.GetLatestVisit(trainerID)
+	if err != nil {
+		if err.Error() == errNotInDB {
+			return s.repo.SetNewVisit(trainerID, managerID)
+		}
+		return err
+	}
+	if visit.LeftAt.IsZero() {
+		return errors.New("member is still in the gym")
+	}
+	return s.repo.SetNewVisit(trainerID, managerID)
+}
+
+func (s *TrainersService) EndVisit(trainerID int) error {
+	visit, err := s.repo.GetLatestVisit(trainerID)
+	if err != nil {
+		if err.Error() == errNotInDB {
+			return errors.New("member is not in the gym")
+		}
+		return err
+	}
+	if !visit.LeftAt.IsZero() {
+		return errors.New("member is not in the gym")
+	}
+	return s.repo.EndVisit(visit.ID)
 }

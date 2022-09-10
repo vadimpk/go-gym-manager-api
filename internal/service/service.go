@@ -47,6 +47,8 @@ type Trainers interface {
 	GetByID(id int) (domain.Trainer, error)
 	UpdateByID(id int, input domain.TrainerUpdateInput) error
 	DeleteByID(id int) error
+	SetNewVisit(trainerID int, managerID int) error
+	EndVisit(trainerID int) error
 }
 
 type Tokens struct {

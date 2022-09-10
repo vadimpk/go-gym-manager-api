@@ -53,4 +53,7 @@ type Trainers interface {
 	GetByID(id int) (domain.Trainer, error)
 	Update(id int, input domain.TrainerUpdateInput) error
 	Delete(id int) error
+	GetLatestVisit(trainerID int) (domain.TrainersVisits, error)
+	SetNewVisit(trainerID int, managerID int) error
+	EndVisit(id int) error
 }

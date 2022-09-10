@@ -132,3 +132,63 @@ func (h *Handler) trainerDeleteByID(c *gin.Context) {
 	}
 	newResponse(c, http.StatusOK, "trainer deleted successfully")
 }
+
+// @Summary Add Trainer Visit
+// @Security ManagerAuth
+// @Tags trainers
+// @Description add trainer visit
+// @ModuleID trainerArrived
+// @Produce  json
+// @Param id path int true "Trainer ID"
+// @Success 200 {object} response
+// @Failure 400,404 {object} response
+// @Failure 500 {object} response
+// @Failure default {object} response
+// @Router       /managers/trainers/arrived/{id} [post]
+func (h *Handler) trainerArrived(c *gin.Context) {
+
+	managerID, err := h.getManagerID(c)
+	if err != nil {
+		return
+	}
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
+
+	err = h.services.Trainers.SetNewVisit(id, managerID)
+	if err != nil {
+		h.handleErrors(c, err)
+		return
+	}
+	newResponse(c, http.StatusOK, "visit set successfully")
+}
+
+// @Summary End Trainer Visit
+// @Security ManagerAuth
+// @Tags trainers
+// @Description end trainer visit
+// @ModuleID trainerLeft
+// @Produce  json
+// @Param id path int true "Trainer ID"
+// @Success 200 {object} response
+// @Failure 400,404 {object} response
+// @Failure 500 {object} response
+// @Failure default {object} response
+// @Router       /managers/trainers/left/{id} [post]
+func (h *Handler) trainerLeft(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.handleErrors(c, errors.New(errBadRequest))
+		return
+	}
+
+	err = h.services.Trainers.EndVisit(id)
+	if err != nil {
+		h.handleErrors(c, err)
+		return
+	}
+	newResponse(c, http.StatusOK, "visit ended successfully")
+}
