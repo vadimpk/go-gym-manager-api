@@ -14,10 +14,6 @@ func (h *Handler) initManagerRoutes(api *gin.RouterGroup) {
 
 		auth := managers.Group("/", h.managerIdentity)
 		{
-			manager := auth.Group("/manager")
-			{
-				manager.POST("/create", h.managerCreateNew)
-			}
 			member := auth.Group("/members")
 			{
 				member.POST("/create", h.memberCreateNew)
@@ -104,14 +100,4 @@ func (h *Handler) managerRefresh(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, res)
-}
-
-// @Summary Create New Manager
-// @Security ManagerAuth
-// @Tags manager
-// @Description manager creation
-// @ModuleID managerCreateNew
-// @Router       /managers/manager/create [post]
-func (h *Handler) managerCreateNew(c *gin.Context) {
-	c.JSON(http.StatusOK, "ok")
 }

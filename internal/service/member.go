@@ -106,6 +106,7 @@ func (s *MembersService) DeleteMembership(memberID int) error {
 	if err != nil {
 		return err
 	}
+
 	return s.repo.DeleteMembership(memberID)
 }
 
