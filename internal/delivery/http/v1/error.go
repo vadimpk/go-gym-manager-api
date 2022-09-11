@@ -26,6 +26,8 @@ func (h *Handler) handleErrors(ctx *gin.Context, err error, errorMessage string)
 		newResponse(ctx, http.StatusOK, domain.ErrDoesntHaveMembershipMessage)
 	case domain.ErrExpiredMembership:
 		newResponse(ctx, http.StatusBadRequest, domain.ErrExpiredMembershipMessage)
+	case domain.ErrExpiredToken:
+		newResponse(ctx, http.StatusUnauthorized, domain.ErrExpiredTokenMessage)
 	default:
 		newResponse(ctx, http.StatusInternalServerError, domain.ErrInternalServerMessage)
 	}

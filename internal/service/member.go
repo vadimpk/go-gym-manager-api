@@ -67,7 +67,7 @@ func (s *MembersService) SetMembership(memberID int, membershipID int) error {
 	}
 
 	duration, _ := time.ParseDuration(membershipNew.Duration)
-	expiresAt := time.Now().Add(duration)
+	expiresAt := time.Now().UTC().Add(duration)
 
 	// check if member has active membership
 	_, err = s.repo.GetMembership(memberID)
@@ -122,7 +122,8 @@ func (s *MembersService) SetNewVisit(memberID int, managerID int) error {
 	if err != nil {
 		return err
 	}
-	if !time.Now().After(membership.ExpiresAt) {
+
+	if time.Now().UTC().After(membership.ExpiresAt) {
 		return errors.New(domain.ErrExpiredMembership)
 	}
 

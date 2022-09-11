@@ -11,6 +11,7 @@ const (
 	ErrManagerIdNotFound    = "manager id not found"
 	ErrDoesntHaveMembership = "doesn't have membership"
 	ErrExpiredMembership    = "membership expired"
+	ErrExpiredToken         = "Token is expired"
 
 	ErrNotInDBMessage              = "No results found in database"
 	ErrBadRequestMessage           = "Bad request: input data is incorrect"
@@ -21,6 +22,7 @@ const (
 	ErrManagerIdNotFoundMessage    = "Cannot do the operation: manager ID not found. Try signing in again"
 	ErrDoesntHaveMembershipMessage = "This member doesn't have any active memberships"
 	ErrExpiredMembershipMessage    = "Cannot do the operation: member's membership is expired"
+	ErrExpiredTokenMessage         = "Token is expired"
 
 	MessageMemberCreated            = "Member created successfully"
 	MessageMemberUpdated            = "Member updated successfully"

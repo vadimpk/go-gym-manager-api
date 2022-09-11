@@ -74,21 +74,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/managers/manager/create": {
-            "post": {
-                "security": [
-                    {
-                        "ManagerAuth": []
-                    }
-                ],
-                "description": "manager creation",
-                "tags": [
-                    "manager"
-                ],
-                "summary": "Create New Manager",
-                "responses": {}
-            }
-        },
         "/managers/members/arrived/{id}": {
             "post": {
                 "security": [

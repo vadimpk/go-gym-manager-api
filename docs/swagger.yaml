@@ -164,15 +164,6 @@ paths:
       summary: Manager Refresh Tokens
       tags:
       - manager-auth
-  /managers/manager/create:
-    post:
-      description: manager creation
-      responses: {}
-      security:
-      - ManagerAuth: []
-      summary: Create New Manager
-      tags:
-      - manager
   /managers/members/arrived/{id}:
     post:
       description: add member visit
