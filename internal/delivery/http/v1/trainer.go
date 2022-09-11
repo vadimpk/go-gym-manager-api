@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"net/http"
@@ -24,17 +23,17 @@ import (
 func (h *Handler) trainerCreateNew(c *gin.Context) {
 	var input domain.TrainerCreateInput
 	if err := c.BindJSON(&input); err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	id, err := h.services.Trainers.CreateNew(input)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 	newDataResponse(c, http.StatusOK, dataResponse{
-		Message: "trainer added successfully",
+		Message: domain.MessageTrainerCreated,
 		Data: map[string]int{
 			"id": id,
 		},
@@ -56,17 +55,17 @@ func (h *Handler) trainerCreateNew(c *gin.Context) {
 func (h *Handler) trainerGetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	trainer, err := h.services.Trainers.GetByID(id)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 	newDataResponse(c, http.StatusOK, dataResponse{
-		Message: "trainer found",
+		Message: domain.MessageTrainerFound,
 		Data:    trainer,
 	})
 }
@@ -88,22 +87,22 @@ func (h *Handler) trainerGetByID(c *gin.Context) {
 func (h *Handler) trainerUpdateByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	var input domain.TrainerUpdateInput
 	if err := c.BindJSON(&input); err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	err = h.services.Trainers.UpdateByID(id, input)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "trainer updated successfully")
+	newResponse(c, http.StatusOK, domain.MessageTrainerUpdated)
 }
 
 // @Summary Delete Trainer By ID
@@ -121,16 +120,16 @@ func (h *Handler) trainerUpdateByID(c *gin.Context) {
 func (h *Handler) trainerDeleteByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	err = h.services.Trainers.DeleteByID(id)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "trainer deleted successfully")
+	newResponse(c, http.StatusOK, domain.MessageTrainerDeleted)
 }
 
 // @Summary Add Trainer Visit
@@ -153,16 +152,16 @@ func (h *Handler) trainerArrived(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	err = h.services.Trainers.SetNewVisit(id, managerID)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "visit set successfully")
+	newResponse(c, http.StatusOK, domain.MessageVisitSet)
 }
 
 // @Summary End Trainer Visit
@@ -180,14 +179,14 @@ func (h *Handler) trainerArrived(c *gin.Context) {
 func (h *Handler) trainerLeft(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	err = h.services.Trainers.EndVisit(id)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "visit ended successfully")
+	newResponse(c, http.StatusOK, domain.MessageVisitEnded)
 }

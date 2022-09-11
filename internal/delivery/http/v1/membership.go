@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"net/http"
@@ -24,17 +23,17 @@ import (
 func (h *Handler) membershipCreateNew(c *gin.Context) {
 	var input domain.MembershipCreateInput
 	if err := c.BindJSON(&input); err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	id, err := h.services.Memberships.CreateNew(input)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 	newDataResponse(c, http.StatusOK, dataResponse{
-		Message: "Membership added successfully",
+		Message: domain.MessageMembershipCreated,
 		Data: map[string]int{
 			"id": id,
 		},
@@ -56,17 +55,17 @@ func (h *Handler) membershipCreateNew(c *gin.Context) {
 func (h *Handler) membershipGetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	membership, err := h.services.Memberships.GetByID(id)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 	newDataResponse(c, http.StatusOK, dataResponse{
-		Message: "Membership found",
+		Message: domain.MessageMembershipFound,
 		Data:    membership,
 	})
 }
@@ -88,22 +87,22 @@ func (h *Handler) membershipGetByID(c *gin.Context) {
 func (h *Handler) membershipUpdateByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	var input domain.MembershipUpdateInput
 	if err := c.BindJSON(&input); err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 
 	err = h.services.Memberships.UpdateByID(id, input)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "Membership updated successfully")
+	newResponse(c, http.StatusOK, domain.MessageMembershipUpdated)
 }
 
 // @Summary Delete Membership By ID
@@ -121,14 +120,14 @@ func (h *Handler) membershipUpdateByID(c *gin.Context) {
 func (h *Handler) membershipDeleteByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	err = h.services.Memberships.DeleteByID(id)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "Membership deleted successfully")
+	newResponse(c, http.StatusOK, domain.MessageMembershipDeleted)
 }

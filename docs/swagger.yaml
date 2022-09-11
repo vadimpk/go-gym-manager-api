@@ -173,6 +173,43 @@ paths:
       summary: Create New Manager
       tags:
       - manager
+  /managers/members/arrived/{id}:
+    post:
+      description: add member visit
+      parameters:
+      - description: Member ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Add Member Visit
+      tags:
+      - members
   /managers/members/create:
     post:
       consumes:
@@ -359,6 +396,43 @@ paths:
       security:
       - ManagerAuth: []
       summary: Get Member's Membership
+      tags:
+      - members
+  /managers/members/left/{id}:
+    post:
+      description: end member visit
+      parameters:
+      - description: Member ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: End Member Visit
       tags:
       - members
   /managers/members/set_membership/{id}/{membership_id}:
@@ -645,6 +719,43 @@ paths:
       summary: Manager Sign In
       tags:
       - manager-auth
+  /managers/trainers/arrived/{id}:
+    post:
+      description: add trainer visit
+      parameters:
+      - description: Trainer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: Add Trainer Visit
+      tags:
+      - trainers
   /managers/trainers/create:
     post:
       consumes:
@@ -757,6 +868,43 @@ paths:
       security:
       - ManagerAuth: []
       summary: Get trainer By ID
+      tags:
+      - trainers
+  /managers/trainers/left/{id}:
+    post:
+      description: end trainer visit
+      parameters:
+      - description: Trainer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - ManagerAuth: []
+      summary: End Trainer Visit
       tags:
       - trainers
   /managers/trainers/update/{id}:

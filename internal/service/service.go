@@ -7,11 +7,6 @@ import (
 	"github.com/vadimpk/go-gym-manager-api/pkg/auth"
 )
 
-const (
-	errNotInDB    = "sql: no rows in result set"
-	errBadRequest = "bad request"
-)
-
 type Services struct {
 	Managers
 	Members

@@ -67,13 +67,13 @@ func (h *Handler) initManagerRoutes(api *gin.RouterGroup) {
 func (h *Handler) managerSignIn(c *gin.Context) {
 	var input domain.SignInInput
 	if err := c.BindJSON(&input); err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	res, err := h.services.Managers.SignIn(input)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, res)
@@ -94,13 +94,13 @@ func (h *Handler) managerSignIn(c *gin.Context) {
 func (h *Handler) managerRefresh(c *gin.Context) {
 	var input domain.RefreshInput
 	if err := c.BindJSON(&input); err != nil {
-		newResponse(c, http.StatusBadRequest, errBadRequestMessage)
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	res, err := h.services.Managers.RefreshTokens(input.RefreshToken)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, res)

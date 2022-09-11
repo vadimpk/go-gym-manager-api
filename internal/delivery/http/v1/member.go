@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"net/http"
@@ -24,17 +23,17 @@ import (
 func (h *Handler) memberCreateNew(c *gin.Context) {
 	var input domain.MemberCreateInput
 	if err := c.BindJSON(&input); err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	id, err := h.services.Members.CreateNew(input)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 	newDataResponse(c, http.StatusOK, dataResponse{
-		Message: "Member added successfully",
+		Message: domain.MessageMemberCreated,
 		Data: map[string]int{
 			"id": id,
 		},
@@ -56,17 +55,17 @@ func (h *Handler) memberCreateNew(c *gin.Context) {
 func (h *Handler) memberGetByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	member, err := h.services.Members.GetByID(id)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 	newDataResponse(c, http.StatusOK, dataResponse{
-		Message: "Member found",
+		Message: domain.MessageMemberFound,
 		Data:    member,
 	})
 }
@@ -88,22 +87,22 @@ func (h *Handler) memberGetByID(c *gin.Context) {
 func (h *Handler) memberUpdateByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	var input domain.MemberUpdateInput
 	if err := c.BindJSON(&input); err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	err = h.services.Members.UpdateByID(id, input)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "Member updated successfully")
+	newResponse(c, http.StatusOK, domain.MessageMemberUpdated)
 }
 
 // @Summary Delete Member By ID
@@ -121,16 +120,16 @@ func (h *Handler) memberUpdateByID(c *gin.Context) {
 func (h *Handler) memberDeleteByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	err = h.services.Members.DeleteByID(id)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "Member deleted successfully")
+	newResponse(c, http.StatusOK, domain.MessageMemberDeleted)
 }
 
 // @Summary Set Membership
@@ -149,21 +148,21 @@ func (h *Handler) memberDeleteByID(c *gin.Context) {
 func (h *Handler) memberSetMembership(c *gin.Context) {
 	memberID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	membershipID, err := strconv.Atoi(c.Param("membership_id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	if err := h.services.Members.SetMembership(memberID, membershipID); err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "Membership set successfully")
+	newResponse(c, http.StatusOK, domain.MessageMembersMembershipSet)
 }
 
 // @Summary Get Member's Membership
@@ -181,18 +180,18 @@ func (h *Handler) memberSetMembership(c *gin.Context) {
 func (h *Handler) memberGetMembership(c *gin.Context) {
 	memberID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	res, err := h.services.Members.GetMembership(memberID)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
 
 	newDataResponse(c, http.StatusOK, dataResponse{
-		Message: "Membership found",
+		Message: domain.MessageMembershipFound,
 		Data:    res,
 	})
 }
@@ -212,15 +211,15 @@ func (h *Handler) memberGetMembership(c *gin.Context) {
 func (h *Handler) memberDeleteMembership(c *gin.Context) {
 	memberID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	if err := h.services.Members.DeleteMembership(memberID); err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "Membership deleted successfully")
+	newResponse(c, http.StatusOK, domain.MessageMembersMembershipDeleted)
 }
 
 // @Summary Add Member Visit
@@ -243,16 +242,16 @@ func (h *Handler) memberArrived(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	err = h.services.Members.SetNewVisit(id, managerID)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "visit set successfully")
+	newResponse(c, http.StatusOK, domain.MessageVisitSet)
 }
 
 // @Summary End Member Visit
@@ -270,14 +269,14 @@ func (h *Handler) memberArrived(c *gin.Context) {
 func (h *Handler) memberLeft(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		h.handleErrors(c, errors.New(errBadRequest))
+		h.handleErrors(c, err, domain.ErrBadRequest)
 		return
 	}
 
 	err = h.services.Members.EndVisit(id)
 	if err != nil {
-		h.handleErrors(c, err)
+		h.handleErrors(c, err, err.Error())
 		return
 	}
-	newResponse(c, http.StatusOK, "visit ended successfully")
+	newResponse(c, http.StatusOK, domain.MessageVisitEnded)
 }

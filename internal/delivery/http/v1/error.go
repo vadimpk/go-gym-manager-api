@@ -2,35 +2,31 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"log"
 	"net/http"
 )
 
-const (
-	errNotInDB           = "sql: no rows in result set"
-	errBadRequest        = "bad request"
-	errEmptyAuthHeader   = "empty auth header"
-	errInvalidAuthHeader = "invalid auth header"
-	errEmptyToken        = "token is empty"
-
-	errNotAuthMessage        = "Not authorized"
-	errBadRequestMessage     = "Input data is incorrect"
-	errNotInDBMessage        = "No results found in database"
-	errInternalServerMessage = "Server is not responding at the moment"
-)
-
-func (h *Handler) handleErrors(ctx *gin.Context, err error) {
+func (h *Handler) handleErrors(ctx *gin.Context, err error, errorMessage string) {
 
 	log.Println(err)
 
-	switch err.Error() {
-	case errNotInDB:
-		newResponse(ctx, http.StatusNotFound, errNotInDBMessage)
-	case errBadRequest:
-		newResponse(ctx, http.StatusBadRequest, errBadRequestMessage)
-	case errEmptyAuthHeader, errInvalidAuthHeader, errEmptyToken:
-		newResponse(ctx, http.StatusUnauthorized, errNotAuthMessage)
+	switch errorMessage {
+	case domain.ErrNotInDB:
+		newResponse(ctx, http.StatusNotFound, domain.ErrNotInDBMessage)
+	case domain.ErrBadRequest:
+		newResponse(ctx, http.StatusBadRequest, domain.ErrBadRequestMessage)
+	case domain.ErrEmptyAuthHeader, domain.ErrInvalidAuthHeader, domain.ErrEmptyToken:
+		newResponse(ctx, http.StatusUnauthorized, domain.ErrNotAuthMessage)
+	case domain.ErrStillInGym:
+		newResponse(ctx, http.StatusBadRequest, domain.ErrStillInGymMessage)
+	case domain.ErrIsNotInGym:
+		newResponse(ctx, http.StatusBadRequest, domain.ErrIsNotInGymMessage)
+	case domain.ErrDoesntHaveMembership:
+		newResponse(ctx, http.StatusOK, domain.ErrDoesntHaveMembershipMessage)
+	case domain.ErrExpiredMembership:
+		newResponse(ctx, http.StatusBadRequest, domain.ErrExpiredMembershipMessage)
 	default:
-		newResponse(ctx, http.StatusInternalServerError, errInternalServerMessage)
+		newResponse(ctx, http.StatusInternalServerError, domain.ErrInternalServerMessage)
 	}
 }

@@ -58,29 +58,39 @@ func (s *TrainersService) DeleteByID(id int) error {
 }
 
 func (s *TrainersService) SetNewVisit(trainerID int, managerID int) error {
+	_, err := s.repo.GetByID(trainerID)
+	if err != nil {
+		return err
+	}
+
 	visit, err := s.repo.GetLatestVisit(trainerID)
 	if err != nil {
-		if err.Error() == errNotInDB {
+		if err.Error() == domain.ErrNotInDB {
 			return s.repo.SetNewVisit(trainerID, managerID)
 		}
 		return err
 	}
 	if visit.LeftAt.IsZero() {
-		return errors.New("trainer is still in the gym")
+		return errors.New(domain.ErrStillInGym)
 	}
 	return s.repo.SetNewVisit(trainerID, managerID)
 }
 
 func (s *TrainersService) EndVisit(trainerID int) error {
+	_, err := s.repo.GetByID(trainerID)
+	if err != nil {
+		return err
+	}
+
 	visit, err := s.repo.GetLatestVisit(trainerID)
 	if err != nil {
-		if err.Error() == errNotInDB {
-			return errors.New("trainer is not in the gym")
+		if err.Error() == domain.ErrNotInDB {
+			return errors.New(domain.ErrIsNotInGym)
 		}
 		return err
 	}
 	if !visit.LeftAt.IsZero() {
-		return errors.New("trainer is not in the gym")
+		return errors.New(domain.ErrIsNotInGym)
 	}
 	return s.repo.EndVisit(visit.ID)
 }

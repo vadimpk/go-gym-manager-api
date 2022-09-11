@@ -72,7 +72,7 @@ func (s *MembersService) SetMembership(memberID int, membershipID int) error {
 	// check if member has active membership
 	_, err = s.repo.GetMembership(memberID)
 	if err != nil {
-		if err.Error() == errNotInDB {
+		if err.Error() == domain.ErrNotInDB {
 			return s.repo.SetMembership(memberID, membershipID, expiresAt)
 		}
 		return err
@@ -84,6 +84,9 @@ func (s *MembersService) SetMembership(memberID int, membershipID int) error {
 func (s *MembersService) GetMembership(memberID int) (domain.MembersMembershipResponse, error) {
 	currentMembership, err := s.repo.GetMembership(memberID)
 	if err != nil {
+		if err.Error() == domain.ErrNotInDB {
+			return domain.MembersMembershipResponse{}, errors.New(domain.ErrDoesntHaveMembership)
+		}
 		return domain.MembersMembershipResponse{}, err
 	}
 	membershipInfo, err := s.membershipsRepo.GetByID(currentMembership.MembershipID)
@@ -107,29 +110,54 @@ func (s *MembersService) DeleteMembership(memberID int) error {
 }
 
 func (s *MembersService) SetNewVisit(memberID int, managerID int) error {
+	// check if member exists
+	_, err := s.repo.GetByID(memberID)
+	if err != nil {
+		return err
+	}
+
+	// check if membership isn't expired yet
+	membership, err := s.GetMembership(memberID)
+	if err != nil {
+		return err
+	}
+	if !time.Now().After(membership.ExpiresAt) {
+		return errors.New(domain.ErrExpiredMembership)
+	}
+
+	// get the latest visit to see if it is possible to set new visit
 	visit, err := s.repo.GetLatestVisit(memberID)
 	if err != nil {
-		if err.Error() == errNotInDB {
+		if err.Error() == domain.ErrNotInDB {
 			return s.repo.SetNewVisit(memberID, managerID)
 		}
 		return err
 	}
 	if visit.LeftAt.IsZero() {
-		return errors.New("member is still in the gym")
+		return errors.New(domain.ErrStillInGym)
 	}
+
 	return s.repo.SetNewVisit(memberID, managerID)
 }
 
 func (s *MembersService) EndVisit(memberID int) error {
+	// check if member exists
+	_, err := s.repo.GetByID(memberID)
+	if err != nil {
+		return err
+	}
+
+	// get the latest visit to see if it is possible to end the visit
 	visit, err := s.repo.GetLatestVisit(memberID)
 	if err != nil {
-		if err.Error() == errNotInDB {
-			return errors.New("member is not in the gym")
+		if err.Error() == domain.ErrNotInDB {
+			return errors.New(domain.ErrIsNotInGym)
 		}
 		return err
 	}
 	if !visit.LeftAt.IsZero() {
-		return errors.New("member is not in the gym")
+		return errors.New(domain.ErrIsNotInGym)
 	}
+
 	return s.repo.EndVisit(visit.ID)
 }
