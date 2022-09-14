@@ -23,6 +23,7 @@ const (
 	ErrDoesntHaveMembershipMessage = "This member doesn't have any active memberships"
 	ErrExpiredMembershipMessage    = "Cannot do the operation: member's membership is expired"
 	ErrExpiredTokenMessage         = "Token is expired"
+	ErrConflictMessage             = "Data you provided is already taken"
 
 	MessageMemberCreated            = "Member created successfully"
 	MessageMemberUpdated            = "Member updated successfully"

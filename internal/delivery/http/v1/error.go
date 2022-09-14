@@ -5,6 +5,7 @@ import (
 	"github.com/vadimpk/go-gym-manager-api/internal/domain"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func (h *Handler) handleErrors(ctx *gin.Context, err error, errorMessage string) {
@@ -19,16 +20,20 @@ func (h *Handler) handleErrors(ctx *gin.Context, err error, errorMessage string)
 	case domain.ErrEmptyAuthHeader, domain.ErrInvalidAuthHeader, domain.ErrEmptyToken:
 		newResponse(ctx, http.StatusUnauthorized, domain.ErrNotAuthMessage)
 	case domain.ErrStillInGym:
-		newResponse(ctx, http.StatusBadRequest, domain.ErrStillInGymMessage)
+		newResponse(ctx, http.StatusForbidden, domain.ErrStillInGymMessage)
 	case domain.ErrIsNotInGym:
-		newResponse(ctx, http.StatusBadRequest, domain.ErrIsNotInGymMessage)
+		newResponse(ctx, http.StatusForbidden, domain.ErrIsNotInGymMessage)
 	case domain.ErrDoesntHaveMembership:
-		newResponse(ctx, http.StatusOK, domain.ErrDoesntHaveMembershipMessage)
+		newResponse(ctx, http.StatusNotFound, domain.ErrDoesntHaveMembershipMessage)
 	case domain.ErrExpiredMembership:
-		newResponse(ctx, http.StatusBadRequest, domain.ErrExpiredMembershipMessage)
+		newResponse(ctx, http.StatusForbidden, domain.ErrExpiredMembershipMessage)
 	case domain.ErrExpiredToken:
 		newResponse(ctx, http.StatusUnauthorized, domain.ErrExpiredTokenMessage)
 	default:
+		if strings.Contains(errorMessage, "duplicate key") {
+			newResponse(ctx, http.StatusConflict, domain.ErrConflictMessage)
+			return
+		}
 		newResponse(ctx, http.StatusInternalServerError, domain.ErrInternalServerMessage)
 	}
 }
